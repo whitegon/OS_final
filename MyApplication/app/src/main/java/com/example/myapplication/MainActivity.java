@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.icu.text.RelativeDateTimeFormatter;
 import android.os.Bundle;
@@ -17,8 +18,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button button = (Button)findViewById(R.id.button);
+        Button button = (Button)findViewById(R.id.buttonCalBMI);
         button.setOnClickListener(caculate_BMI);
+        Button button2 = (Button)findViewById(R.id.buttonGotolbkg);
+        button2.setOnClickListener(goto_lbkg);
 
     }
 
@@ -65,6 +68,18 @@ public class MainActivity extends AppCompatActivity {
     };
 
 
+    private View.OnClickListener goto_lbkg = new View.OnClickListener(){
+
+        @Override
+        public void onClick(View v) {
+
+            startActivity(new Intent(MainActivity.this, LB2KG.class));
+
+
+        }
+
+
+    };
 
 
 }
