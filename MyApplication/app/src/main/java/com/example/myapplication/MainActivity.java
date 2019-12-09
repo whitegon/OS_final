@@ -22,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(caculate_BMI);
         Button button2 = (Button)findViewById(R.id.buttonGotolbkg);
         button2.setOnClickListener(goto_lbkg);
+        Button button3 = (Button)findViewById(R.id.buttonGotoTimer);
+        button3.setOnClickListener(goto_timer);
 
     }
 
@@ -72,14 +74,20 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-
             startActivity(new Intent(MainActivity.this, LB2KG.class));
-
-
         }
 
 
     };
 
+    private View.OnClickListener goto_timer = new View.OnClickListener(){
+
+        @Override
+        public void onClick(View v) {
+            startActivity(new Intent(MainActivity.this, Timer.class));
+        }
+
+
+    };
 
 }
