@@ -7,8 +7,11 @@ import android.graphics.Color;
 import android.icu.text.RelativeDateTimeFormatter;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
@@ -33,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
 
+
+            //caculate bmi
             EditText fieldheight = (EditText)findViewById(R.id.editTextheight) ;
             EditText fieldweight = (EditText)findViewById(R.id.editTextweight) ;
 
@@ -62,6 +67,62 @@ public class MainActivity extends AppCompatActivity {
                 bmi_note.setText("超重");
             }
 
+            double bmr = 0 ;
+
+            //caculate bmr and tdee
+            EditText fieldyear = (EditText)findViewById(R.id.editTextyear) ;
+            int year = Integer.parseInt(fieldyear.getText().toString()) ;
+            RadioGroup boy_girl = (RadioGroup)findViewById(R.id.RadioGroup_gender) ;
+
+            //choose boy or girl
+            switch (boy_girl.getCheckedRadioButtonId()){
+                case R.id.radioButton_boy:
+                    bmr = ( 13.7 * weight ) + ( 5.0 * height * 100 ) - ( 6.8 * year ) + 66 ;
+                    break;
+
+                case R.id.radioButton_girl:
+                    bmr = ( 9.6 * weight ) + ( 1.8 * height * 100 ) - ( 4.7 * year ) + 655 ;
+                    break;
+
+            }
+
+
+            RadioGroup sport_type = (RadioGroup)findViewById(R.id.RadioGroup_sport_type) ;
+
+            double tdee = 0 ;
+
+
+            //choose sport type
+            switch (sport_type.getCheckedRadioButtonId()){
+                case R.id.radioButton_nosport:
+                    tdee = bmr * 1.2 ;
+                    break;
+
+                case R.id.radioButton_lightsport:
+                    tdee = bmr * 1.375 ;
+                    break;
+
+                case R.id.radioButton_medsport:
+                    tdee = bmr * 1.55 ;
+                    break;
+
+                case R.id.radioButton_hardsport:
+                    tdee = bmr * 1.725 ;
+                    break;
+
+                case R.id.radioButton_everyday:
+                    tdee = bmr * 1.9 ;
+                    break;
+
+            }
+
+            TextView result_tdee = (TextView)findViewById(R.id.result_tdee) ;
+            result_tdee.setText(Integer.toString((int)tdee));
+
+            TextView tdee_note = (TextView)findViewById(R.id.tdee_note) ;
+            tdee_note.setText("維持體重：TDEE\n" +
+                              "增加肌肉：TDEE+300\n" +
+                              "減少脂肪：TDEE-300");
 
 
         }
