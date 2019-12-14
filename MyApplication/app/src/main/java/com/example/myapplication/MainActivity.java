@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         Button button2 = (Button)findViewById(R.id.buttonGotolbkg);
         button2.setOnClickListener(goto_lbkg);
         Button button3 = (Button)findViewById(R.id.buttonGotoTimer);
-        button3.setOnClickListener(goto_timer);
+        button3.setOnClickListener(goto_sport);
 
     }
 
@@ -146,6 +146,16 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             startActivity(new Intent(MainActivity.this, Timer.class));
+        }
+
+
+    };
+
+    private View.OnClickListener goto_sport = new View.OnClickListener(){
+
+        @Override
+        public void onClick(View v) {
+            startActivity(new Intent(MainActivity.this, ListSport.class));
         }
 
 
