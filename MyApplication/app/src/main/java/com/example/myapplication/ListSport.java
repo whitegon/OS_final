@@ -73,6 +73,7 @@ public class ListSport extends AppCompatActivity {
             String sport = (fieldsport.getText().toString()) ;
 
             sport_list.add(sport) ;
+            adapter.notifyDataSetChanged();
 
 
         }
