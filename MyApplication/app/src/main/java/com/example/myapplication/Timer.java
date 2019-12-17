@@ -6,7 +6,9 @@ import androidx.core.app.NotificationManagerCompat;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,13 +27,21 @@ public class Timer extends AppCompatActivity {
 
     private NotificationManagerCompat notificationManager;
     public int set, worktime, idletime, cnt;
+    public boolean reset;
+    public CountDownTimer cdtimer;
+    public TextView fieldTime;
+    public Button button_start_timer, button_reset_timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timer);
-        Button button = (Button)findViewById(R.id.buttonStartTimer);
-        button.setOnClickListener(start_timer);
+        button_start_timer = (Button)findViewById(R.id.buttonStartTimer);
+        button_start_timer.setOnClickListener(start_timer);
+        button_reset_timer = (Button)findViewById(R.id.buttonResetTimer);
+        button_reset_timer.setOnClickListener(reset_timer);
+        fieldTime  = (TextView)findViewById(R.id.textViewRemainTime);
+        reset = true;
 
         notificationManager = NotificationManagerCompat.from(this);
     }
@@ -64,38 +74,39 @@ public class Timer extends AppCompatActivity {
     }
 
     public void timer(){
-        if(cnt == set * 2){
+        if(cnt == set * 2 - 1 || reset == true){
+            reset = true;
             return;
         }else if(cnt % 2 == 0){
-            new CountDownTimer(worktime, 1000) {
-
-                TextView fieldTime = (TextView)findViewById(R.id.textViewRemainTime) ;
+            cdtimer = new CountDownTimer(worktime, 1000) {
 
                 public void onTick(long millisUntilFinished) {
-                    fieldTime.setText("seconds remaining: " + millisUntilFinished / 1000);
+                    fieldTime.setText("Set " + Integer.toString(cnt / 2 + 1) + " remaining: " + millisUntilFinished / 1000);
                 }
 
                 public void onFinish() {
                     notification("Set " + Integer.toString(cnt / 2 + 1) + " Done!");
                     fieldTime.setText("set done!");
                     cnt += 1;
-                    timer();
+                    button_start_timer.setEnabled(true);
+                    //timer();
                 }
             }.start();
         }else{
-            new CountDownTimer(idletime, 1000) {
+            cdtimer = new CountDownTimer(idletime, 1000) {
 
                 TextView fieldTime = (TextView)findViewById(R.id.textViewRemainTime) ;
 
                 public void onTick(long millisUntilFinished) {
-                    fieldTime.setText("seconds remaining: " + millisUntilFinished / 1000);
+                    fieldTime.setText("Idle remaining: " + millisUntilFinished / 1000);
                 }
 
                 public void onFinish() {
                     notification("Idle " + Integer.toString(cnt / 2 + 1) + " Done!");
                     fieldTime.setText("idle done!");
                     cnt += 1;
-                    timer();
+                    button_start_timer.setEnabled(true);
+                    //timer();
                 }
             }.start();
         }
@@ -106,26 +117,48 @@ public class Timer extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            EditText fieldset = (EditText)findViewById(R.id.editTextSet) ;
-            set = Integer.parseInt(fieldset.getText().toString());
+            button_start_timer.setEnabled(false);
+            if(reset == false){
+                timer();
+            }else{
+                reset = false;
 
-            EditText fieldworktime = (EditText)findViewById(R.id.editTextWorkTime) ;
-            String[] timeStr = fieldworktime.getText().toString().split(":");
-            int min = Integer.parseInt(timeStr[0]);
-            int sec = Integer.parseInt(timeStr[1]);
-            worktime = (min * 60 + sec) * 1000;
+                EditText fieldset = (EditText)findViewById(R.id.editTextSet) ;
+                set = Integer.parseInt(fieldset.getText().toString());
 
-            EditText fieldidletime = (EditText)findViewById(R.id.editTextIdleTime) ;
-            timeStr = fieldidletime.getText().toString().split(":");
-            min = Integer.parseInt(timeStr[0]);
-            sec = Integer.parseInt(timeStr[1]);
-            idletime = (min * 60 + sec) * 1000;
+                EditText fieldworktime = (EditText)findViewById(R.id.editTextWorkTime) ;
+                String[] timeStr = fieldworktime.getText().toString().split(":");
+                int min = Integer.parseInt(timeStr[0]);
+                int sec = Integer.parseInt(timeStr[1]);
+                worktime = (min * 60 + sec) * 1000;
 
-            cnt = 0;
-            timer();
+                EditText fieldidletime = (EditText)findViewById(R.id.editTextIdleTime) ;
+                timeStr = fieldidletime.getText().toString().split(":");
+                min = Integer.parseInt(timeStr[0]);
+                sec = Integer.parseInt(timeStr[1]);
+                idletime = (min * 60 + sec) * 1000;
+
+                cnt = 0;
+                timer();
+            }
 
         }
 
+    };
+
+    private View.OnClickListener reset_timer = new View.OnClickListener(){
+
+        @Override
+        public void onClick(View v) {
+            reset = true;
+            set = 0;
+            worktime = 0;
+            idletime = 0;
+            cnt = 0;
+            cdtimer.cancel();
+            fieldTime.setText("Reset!");
+            button_start_timer.setEnabled(true);
+        }
 
     };
 
