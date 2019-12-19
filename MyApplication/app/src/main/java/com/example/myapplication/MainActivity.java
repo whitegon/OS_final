@@ -4,14 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.icu.text.RelativeDateTimeFormatter;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,6 +37,24 @@ public class MainActivity extends AppCompatActivity {
             //caculate bmi
             EditText fieldheight = (EditText)findViewById(R.id.editTextheight) ;
             EditText fieldweight = (EditText)findViewById(R.id.editTextweight) ;
+            EditText fieldyear = (EditText)findViewById(R.id.editTextyear) ;
+            RadioGroup boy_girl = (RadioGroup)findViewById(R.id.RadioGroup_gender) ;
+            RadioGroup sport_type = (RadioGroup)findViewById(R.id.RadioGroup_sport_type) ;
+
+            if(fieldheight.getText().toString().isEmpty() ||
+                    fieldweight.getText().toString().isEmpty() ||
+                    fieldyear.getText().toString().isEmpty() ||
+                    (boy_girl.getCheckedRadioButtonId()  == -1) ||
+                    (sport_type.getCheckedRadioButtonId() == -1)
+            )
+            {
+                TextView alert = (TextView)findViewById(R.id.Alert);
+                alert.setText("欄位都必填");
+                alert.setTextColor(Color.RED);
+                return;
+            }
+
+
 
             double height = Double.parseDouble(fieldheight.getText().toString())/100 ;
             double weight = Double.parseDouble(fieldweight.getText().toString()) ;
@@ -50,29 +65,31 @@ public class MainActivity extends AppCompatActivity {
             result_bmi.setText(Integer.toString((int)bmi)) ;
 
             TextView bmi_note = (TextView)findViewById(R.id.bmi_note) ;
+            TextView alert = (TextView)findViewById(R.id.Alert);
 
             if ( bmi < 18.5 ) {
                 bmi_note.setTextColor(Color.RED);
                 bmi_note.setText("過輕");
+                alert.setText("");
             }
 
 
             else if ( bmi >= 18.5 && bmi <= 24 ) {
                 bmi_note.setTextColor(Color.GREEN);
                 bmi_note.setText("正常");
+                alert.setText("");
             }
 
             else{
                 bmi_note.setTextColor(Color.RED);
                 bmi_note.setText("超重");
+                alert.setText("");
             }
 
             double bmr = 0 ;
 
             //caculate bmr and tdee
-            EditText fieldyear = (EditText)findViewById(R.id.editTextyear) ;
             int year = Integer.parseInt(fieldyear.getText().toString()) ;
-            RadioGroup boy_girl = (RadioGroup)findViewById(R.id.RadioGroup_gender) ;
 
             //choose boy or girl
             switch (boy_girl.getCheckedRadioButtonId()){
@@ -87,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
 
-            RadioGroup sport_type = (RadioGroup)findViewById(R.id.RadioGroup_sport_type) ;
 
             double tdee = 0 ;
 
@@ -121,8 +137,8 @@ public class MainActivity extends AppCompatActivity {
 
             TextView tdee_note = (TextView)findViewById(R.id.tdee_note) ;
             tdee_note.setText("維持體重：TDEE\n" +
-                              "增加肌肉：TDEE+300\n" +
-                              "減少脂肪：TDEE-300");
+                    "增加肌肉：TDEE+300\n" +
+                    "減少脂肪：TDEE-300");
 
 
         }
